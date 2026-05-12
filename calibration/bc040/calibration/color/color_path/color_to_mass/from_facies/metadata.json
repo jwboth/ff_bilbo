@@ -1,0 +1,12 @@
+{
+  "basis": "facies",
+  "label_ids": [
+    0,
+    1,
+    2
+  ],
+  "color_mode": "relative",
+  "ignore_labels": [
+    0
+  ]
+}

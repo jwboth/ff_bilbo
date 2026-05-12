@@ -1,0 +1,51 @@
+##################################################
+# DATA AND METADATA
+##################################################
+[id]
+run_id = "Bilbo BC040"
+
+[data]
+folders = [
+    "\\\\klient.uib.no\\FELLES\\LAB-IT\\IFT\\resfys\\FluidFlower\\FF3 Bilbo\\Bilbo 030-on VTC chemistry series\\B040\\230905_101800_B040_ViTaCo_CO2",
+    "\\\\klient.uib.no\\FELLES\\LAB-IT\\IFT\\resfys\\FluidFlower\\FF3 Bilbo\\Bilbo 030-on VTC chemistry series\\B040\\230905_114300_B040_150s",
+]
+results = "E:\\ff_bilbo\\bc040"
+baseline = "DSC60694.JPG"
+
+[data.path.baseline]
+paths = ["DSC60608.JPG", "DSC60612.JPG", "DSC60617.JPG", "DSC60623.JPG", "DSC60627.JPG"]
+
+[protocols]
+injection = "protocols/bc040/injection_protocol.csv"                       # note: relative path!
+pressure_temperature = "protocols/bc040/pressure_temperature_protocol.csv" # note: relative path!
+imaging_mode = "ctime"                                                     # "ctime" or "exif" - only for initialization - "ctime" faster but different!
+
+[protocols.imaging]
+"\\\\klient.uib.no\\FELLES\\LAB-IT\\IFT\\resfys\\FluidFlower\\FF3 Bilbo\\Bilbo 030-on VTC chemistry series\\B040\\230905_101800_B040_ViTaCo_CO2" = "protocols/bc040/imaging_protocol_230905_101800_B040_ViTaCo_CO2.csv" # note: relative path!
+"\\\\klient.uib.no\\FELLES\\LAB-IT\\IFT\\resfys\\FluidFlower\\FF3 Bilbo\\Bilbo 030-on VTC chemistry series\\B040\\230905_114300_B040_150s" = "protocols/bc040/imaging_protocol_230905_114300_B040_150s.csv" # note: relative path!
+
+# Labels based on segmentation of the reference image (e.g., obtained from manual annotation or from a segmentation routine)
+[labeling]
+colored_image = "./data/bc040/DSC60694_segmented.png"
+#colored_image = "./data/DSC60608_accurately_segmented.png"
+
+# Active and inactive corrections
+[corrections]
+
+# Type and size correction (for speed)
+[corrections.type]
+type = "float32"
+
+# TODO: Not supported for now!
+#[corrections.resize]
+#scale = 0.5
+
+[corrections.drift]
+colorchecker = "upper_right"
+
+# Calibration of curvature
+[corrections.curvature.crop]
+pts_src = [[0, 343], [4437, 322], [4416, 7690], [0, 7669]]
+width = 0.92
+height = 0.55
+
