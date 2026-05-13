@@ -69,6 +69,11 @@ name = "Fingers in the left storage container associated with port 1"
 corner_1 = [0.05, 0.15]
 corner_2 = [0.30, 0.00]
 
+[roi.storage]
+name = "storage"
+corner_1 = [0.0, 0.39]
+corner_2 = [0.65, 0.0]
+
 ######################################################
 # DATA SELECTION
 ######################################################
@@ -121,6 +126,11 @@ color = "color_path"
 data = ["analysis"]
 formats = ["jpg"] #["jpg", "csv"]
 
+[analysis.fingers]
+mode = "concentration_aq" # Choose from std modes ("mass", "concentration_aq", ...) or "id" among color.*.<id>.
+threshold = 0.1 # Choose sufficiently low.
+roi = ["storage"] # Choose such that the top boundary crosses the plume.
+
 [analysis.mass]
 color = "color_path"
 export = ["mass", "extensive_rescaled_mass", "rescaled_saturation_g", "rescaled_concentration_aq"]
@@ -160,13 +170,13 @@ linewidth = 16
 #####################################
 
 [helper.roi]
-data = "calibration2"
+data = "calibration"
 
 [helper.roi_viewer]
-data = "calibration2"
+data = "calibration"
 
 [helper.results]
-data = "calibration2"
+data = "calibration"
 mode = "extensive_rescaled_mass"
 format = "csv"
 
