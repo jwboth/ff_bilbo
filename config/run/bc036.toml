@@ -1,0 +1,50 @@
+##################################################
+# DATA AND METADATA
+##################################################
+[id]
+run_id = "Bilbo BC036"
+
+[data]
+folders = [
+    "\\\\klient.uib.no\\FELLES\\LAB-IT\\IFT\\resfys\\FluidFlower\\FF3 Bilbo\\Bilbo 030-on VTC chemistry series\\B036 ViTaCo-pH_7th_run\\230607_175500_B036_CO2_injection_15s",
+    "\\\\klient.uib.no\\FELLES\\LAB-IT\\IFT\\resfys\\FluidFlower\\FF3 Bilbo\\Bilbo 030-on VTC chemistry series\\B036 ViTaCo-pH_7th_run\\230607_193030_B036_rest_150s",
+]
+results = "E:\\ff_bilbo\\bc036"
+baseline = "DSC62715.JPG"
+
+[data.path.baseline]
+paths = ["DSC62715.JPG", "DSC62710.JPG", "DSC62700.JPG"]
+
+[protocols]
+injection = "protocols/bc036/injection_protocol.csv"                       # note: relative path!
+pressure_temperature = "protocols/bc036/pressure_temperature_protocol.csv" # note: relative path!
+imaging_mode = "ctime"                                                     # "ctime" or "exif" - only for initialization - "ctime" faster but different!
+
+[protocols.imaging]
+"\\\\klient.uib.no\\FELLES\\LAB-IT\\IFT\\resfys\\FluidFlower\\FF3 Bilbo\\Bilbo 030-on VTC chemistry series\\B036 ViTaCo-pH_7th_run\\230607_175500_B036_CO2_injection_15s" = "protocols/bc036/imaging_protocol_230607_175500_B036_CO2_injection_15s.csv" # note: relative path!
+"\\\\klient.uib.no\\FELLES\\LAB-IT\\IFT\\resfys\\FluidFlower\\FF3 Bilbo\\Bilbo 030-on VTC chemistry series\\B036 ViTaCo-pH_7th_run\\230607_193030_B036_rest_150s" = "protocols/bc036/imaging_protocol_230607_193030_B036_rest_150s.csv" # note: relative path!
+
+# Labels based on segmentation of the reference image (e.g., obtained from manual annotation or from a segmentation routine)
+[labeling]
+colored_image = "./data/bc040/DSC60694_segmented.png"
+
+# Active and inactive corrections
+[corrections]
+
+# Type and size correction (for speed)
+[corrections.type]
+type = "float32"
+
+# TODO: Not supported for now!
+#[corrections.resize]
+#scale = 0.5
+
+[corrections.drift]
+colorchecker = "upper_right"
+
+# Calibration of curvature
+[corrections.curvature.crop]
+pts_src = [[0, 343], [4437, 322], [4416, 7690], [0, 7669]]
+width = 0.92
+height = 0.55
+
