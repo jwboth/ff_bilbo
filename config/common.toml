@@ -81,10 +81,16 @@ corner_2 = [0.65, 0.0]
 [data.time.calibration]
 times = ["00:30:00", "01:30:00", "05:00:00", "12:00:00"]
 
+[data.interval.injection]
+start = "00:00:00"
+end = "00:55:00"
+num = 12
+tol = "00:05:00"
+
 [data.interval.analysis]
 start = "01:00:00"
-end = "24:00:00"
-num = 24
+end = "72:00:00"
+num = 72
 tol = "00:05:00"
 
 #####################################
@@ -123,7 +129,7 @@ color = "color_path"
 #####################################
 
 [analysis]
-data = ["analysis"]
+data = ["injection", "analysis"]
 formats = ["jpg"] #["jpg", "csv"]
 
 [analysis.fingers]
@@ -143,15 +149,15 @@ export = ["mass", "extensive_rescaled_mass", "rescaled_saturation_g", "rescaled_
 
 [analysis.segmentation.aqueous]
 label = "CO2(aq)"
-mode = "rescaled_concentration_aq"
-thresholds = [0.05, 0.3, 0.5]
+mode = "concentration_aq"
+thresholds = [0.1, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 color = [120, 210, 255]
-alpha = [0.5, 0.75, 1.0]
+alpha = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 linewidth = 16
 show_values = false
 value_color = [255, 255, 255]
 value_size = 4
-value_alpha = 0.8
+value_alpha = 0.5
 value_density = 0.5
 value_min_distance_px = 35
 value_max_per_contour = 4
@@ -160,9 +166,9 @@ value_format = "{:.2f}"
 [analysis.segmentation.gas]
 label = "CO2(g)"
 mode = "rescaled_saturation_g"
-thresholds = [0.001]
+thresholds = [0.01, 0.3, 0.6, 0.9]
 color = [0, 0, 150]
-alpha = [1.0]
+alpha = [0.25, 0.5, 0.75, 1.0]
 linewidth = 16
 
 #####################################
