@@ -1,0 +1,315 @@
+##################################################
+# DATA AND METADATA
+##################################################
+[id]
+run_id = "Bilbo BC049"
+
+[data]
+folders = [
+    "\\\\klient.uib.no\\FELLES\\LAB-IT\\IFT\\resfys\\FluidFlower\\FF3 Bilbo\\Bilbo 030-on VTC chemistry series\\B049 CO2 in BTB 060 BCG 015\\231031_103500_B049_CO2_15s",
+    "\\\\klient.uib.no\\FELLES\\LAB-IT\\IFT\\resfys\\FluidFlower\\FF3 Bilbo\\Bilbo 030-on VTC chemistry series\\B049 CO2 in BTB 060 BCG 015\\231031_124410_B049_rest_150s",
+]
+results = "E:\\ff_bilbo\\b049"
+baseline = "DSC12652.JPG"
+
+[data.path.baseline]
+paths = ["DSC12652.JPG", "DSC12600.JPG", "DSC12500.JPG"]
+
+[protocols]
+injection = "protocols/b049/injection_protocol.csv"   # note: relative path!
+pressure_temperature = "protocols/b049/pressure_temperature_protocol.csv" # note: relative path!
+imaging_mode = "ctime"                                                     # "ctime" or "exif" - only for initialization - "ctime" faster but different!
+
+[protocols.imaging]
+"\\\\klient.uib.no\\FELLES\\LAB-IT\\IFT\\resfys\\FluidFlower\\FF3 Bilbo\\Bilbo 030-on VTC chemistry series\\B049 CO2 in BTB 060 BCG 015\\231031_103500_B049_CO2_15s" = "protocols/b049/imaging_protocol_231031_103500_B049_CO2_15s.csv" # note: relative path!
+"\\\\klient.uib.no\\FELLES\\LAB-IT\\IFT\\resfys\\FluidFlower\\FF3 Bilbo\\Bilbo 030-on VTC chemistry series\\B049 CO2 in BTB 060 BCG 015\\231031_124410_B049_rest_150s" = "protocols/b049/imaging_protocol_231031_124410_B049_rest_150s.csv" # note: relative path!
+
+# Labels based on segmentation of the reference image (e.g., obtained from manual annotation or from a segmentation routine)
+[labeling]
+colored_image = "./data/b049/DSC12652_segmented.png"
+
+# Active and inactive corrections
+[corrections]
+
+# Type and size correction (for speed)
+[corrections.type]
+type = "float32"
+
+# TODO: Not supported for now!
+#[corrections.resize]
+#scale = 0.5
+
+[corrections.drift]
+colorchecker = "upper_right"
+
+# Calibration of curvature
+[corrections.curvature.crop]
+pts_src = [[0, 355], [4435, 335], [4425, 7702], [0, 7660]]
+width = 0.92
+height = 0.55
+
+[corrections.illumination]
+labels = [0] # storage unit
+num_samples = 100
+
+##################################################
+# METADATA
+##################################################
+
+# Depth measurements
+[depth]
+measurements = "./data/constant_depth_measurements.csv"
+
+# Facies properties and mapping to labels in the segmented image
+[facies]
+props = "./data/facies.csv" # excel file with facies properties
+
+[facies.0] # water and colorchecker
+labels = [1, 2]
+[facies.1] # caprock
+labels = [3]
+[facies.2] # storage
+labels = [0]
+
+##################################################
+# GEOMETRY
+##################################################
+
+# Dimensions of the rig
+[rig]
+dim = 2       # dimension of the model
+width = 0.92  # width of the model in m
+height = 0.55 # height of the model in m
+
+[image_porosity]
+mode = "from_image"
+tol = 0.9
+
+# Additional options for from_image mode:
+patches = [10, 10]
+num_clusters = 5
+sample_width = 50
+tol_color_distance = 0.1
+tol_color_gradient = 0.02
+
+##################################################
+# IMAGE PROCESSING
+##################################################
+
+# Denoising using a simple averaging filter.
+[restoration]
+method = "volume_average"
+
+[restoration.options]
+rev_size = 0.005 # meters
+
+######################################################
+# ROIs
+######################################################
+
+[roi.full]
+name = "Full Domain"
+corner_1 = [0.0, 0.0]
+corner_2 = [0.92, 0.55]
+
+[roi.calibration]
+name = "full domain without cc"
+corner_1 = [0.01, 0.45]
+corner_2 = [0.90, 0.00]
+
+# Finger analysis
+[roi.fingers]
+name = "Fingers in the left storage container associated with port 1"
+corner_1 = [0.05, 0.15]
+corner_2 = [0.30, 0.00]
+
+[roi.storage]
+name = "storage"
+corner_1 = [0.0, 0.39]
+corner_2 = [0.65, 0.0]
+
+######################################################
+# DATA SELECTION
+######################################################
+
+[data.time.calibration]
+times = ["00:05:00", "00:10:00", "00:15:00", "00:20:00", "00:30:00", "01:30:00", "05:00:00", "12:00:00", "24:00:00", "48:00:00", "72:00:00"]
+
+[data.interval.injection]
+start = "00:00:00"
+end = "01:00:00"
+num = 25
+tol = "00:05:00"
+
+[data.interval.analysis]
+start = "01:00:00"
+end = "48:00:00"
+num = 48
+tol = "00:05:00"
+
+#####################################
+# SIGNALS
+#####################################
+
+[color.path.color_path]
+mode = "relative"
+basis = "facies"
+calibration_mode = "manual"
+data = ["calibration"]
+baseline = "baseline"
+rois = ["calibration"]
+ignore_baseline_spectrum = "none"
+histogram_weighting = "wls"
+ignore_labels = [0] # water and top layer
+reference_label = 2 # Main storage layer
+resolution = 21
+num_segments = 6
+threshold_baseline = 0.0
+threshold_calibration = 1e-3
+
+[calibration]
+data = ["calibration"]
+
+[calibration.color]
+color = "color_path"
+# TODO: move data from color paths here...
+
+[calibration.mass]
+data = "calibration" # TODO rm.
+color = "color_path"
+
+#####################################
+# ANALYSIS
+#####################################
+
+[analysis]
+data = ["injection", "analysis"]
+formats = ["jpg", "npz", "csv"] #["jpg", "csv"]
+
+[analysis.fingers]
+mode = "concentration_aq" # Choose from std modes ("mass", "concentration_aq", ...) or "id" among color.*.<id>.
+threshold = 0.01 # Choose sufficiently low.
+roi = ["storage"] # Choose such that the top boundary crosses the plume.
+
+# Options for simplifying the analyzed contour
+reduce_to_main_contour = true # If true, removes all small features.
+fill_holes = false # If true, holes in segmentation will be filled.
+
+# Smoothing of the contour
+contour_smoother = "savitzky_golay" # If chosen, contours are smoothed.
+[analysis.fingers.contour_smoother_options]
+window_length = 41
+polyorder = 3
+
+[analysis.mass]
+color = "color_path"
+export = ["mass", "rescaled_saturation_g", "rescaled_concentration_aq", "saturation_g", "concentration_aq"]
+
+#[analysis.expert_knowledge]
+#saturation_g = ["storage"]
+#rescaled_saturation_g = ["storage"]
+#concentration_aq = ["storage", "caprock"]
+#rescaled_concentration_aq = ["storage", "caprock"]
+
+[analysis.segmentation.aqueous]
+label = "CO2(aq)"
+mode = "concentration_aq"
+thresholds = [0.02, 0.1, 0.3, 0.5, 0.7, 0.9]
+color = [114, 243, 185]
+alpha = [0.05, 0.1, 0.3, 0.5, 0.7, 0.9]
+linewidth = 16
+show_values = false
+value_color = [255, 255, 255]
+value_size = 4
+value_alpha = 0.5
+value_density = 0.5
+value_min_distance_px = 35
+value_max_per_contour = 4
+value_format = "{:.2f}"
+
+[analysis.segmentation.gas]
+label = "CO2(g)"
+mode = "rescaled_saturation_g"
+thresholds = [0.01, 0.5, 0.9]
+color = [255, 243, 137]
+alpha = [0.25, 0.5, 1.0]
+linewidth = 16
+
+#####################################
+# HELPER
+#####################################
+
+[helper.roi]
+data = "calibration"
+
+[helper.roi_viewer]
+data = "calibration"
+
+[helper.results]
+data = "calibration"
+mode = "extensive_rescaled_mass"
+format = "csv"
+
+#####################################
+# FORMATS
+#####################################
+
+[format.jpg.jpg]
+resolution = [1080, 4]
+keep_ratio = true
+name = "spatial_map_HH:MM"
+cmap = "color_path.from_facies.7"
+quality=100
+
+[format.csv.csv]
+resolution = [220, 368]
+keep_ratio = false
+float_format = "{:.3e}"
+name = "spatial_map_HH:MM"
+
+[format.npz.npz]
+name = "spatial_map_HH:MM"
+
+#####################################
+# UTILS
+#####################################
+
+# For download of raw images to local filesystem
+#[download]
+#source = "\\\\klient.uib.no\\FELLES\\LAB-IT\\IFT\\resfys\\FluidFlower\\FF2 24-25 glass beads\\050825_glass_beads_1_150_s"
+
+[video]
+
+[video.source]
+#folder = "segmentation/jpg" # relative to [data.results] when not absolute
+#folder = "mass/jpg" # relative to [data.results] when not absolute
+#folder = "saturation_g/jpg" # relative to [data.results] when not absolute
+#folder = "concentration_aq/jpg" # relative to [data.results] when not absolute
+folder = "cropping/jpg" # relative to [data.results] when not absolute
+#folder = "fingers/paths/storage" # relative to [data.results] when not absolute
+#folder = "fingers/tips/storage" # relative to [data.results] when not absolute
+#extensions = [".jpg"]
+recursive = false
+sorting = "name"
+
+[video.output]
+formats = ["mp4"]
+fps = 6.0
+codec = "mp4v"
+quality = 100
+# resolution = [1280, 720] # optional [width, height]
+
+[video.overlay]
+show_elapsed_time = false
+elapsed_time_format = "Elapsed: {:.2f} h"
+show_note = true
+note = "FluidFlower BC02"
+font_scale = 0.5
+thickness = 2
+text_color = [255, 255, 255]
+position = [20, 20]
+box_enabled = true
+box_color = [0, 0, 0]
+box_alpha = 0.4
+box_padding = 10
+
