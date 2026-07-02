@@ -43,9 +43,22 @@ pts_src = [[415, 47], [5263, 110], [5228, 7829], [448, 7886]]
 width = 0.92
 height = 0.55
 
+# @Thibault uncomment this to test the existing illumination correction in DarSIA
 #[corrections.illumination]
-#labels = [0] # storage unit
+#labels = [4] # storage unit
 #num_samples = 100
+
+# @Thibault. comment in and out to activate/deactivate your correction - you can only have one of the corrections active
+[corrections.patchwise_illumination]
+image_path = "D:\\ff\\co2\\DSC51263.JPG" # Note that here you need to use absolute paths
+baseline_paths = ["D:\\ff\\co2\\DSC51263.JPG", "D:\\ff\\co2\\DSC51264.JPG"]
+# @Thibault: you can control all other parameters you added to the config here.
+# limit = 1450
+#nw = 1000
+#eps= 1e-6
+# Note that I removed "show_plot" and "saving_path".
+# The former, you can still control in the menu to the left.
+# The path is controlled from the workflow. You will need to update your test scripts accordingly.
 
 ##################################################
 # METADATA
@@ -168,7 +181,7 @@ calibration_mode = "auto" # "manual"
 rois = ["calibration"]
 # @Thibault: These are tuning parameters, it may be interesting to play with those, not sure what instructions to give you really, but I try
 threshold_calibration = 0.0 # Main control parameter on the color cloud. Lower values should increase the sensitivity to pick up colors. So far I always needed to use high values (1e-3 typically) as the color cloud was too noisy. Here you should test values: 0.0, 1e-5, 1e-4, 1e-3. Primary priority.
-num_segments = 6 # this controls how many segments the color paths have - 6 is too high. I would try values: 2,3,4.
+num_segments = 3 # this controls how many segments the color paths have - 6 is too high. I would try values: 2,3,4.
 histogram_weighting = "wls" # This selects the algorithm used to decide the automatic path selection. I typically always use "wls", so secondary priority. available algorithms: "threshold", "wls", "wls_sqrt", "wls_log"
 resolution = 21 # needs to be odd, could also try 31 and 41 (low priority)
 threshold_baseline = 0.0 # should stay 0.
